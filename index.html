@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D O R X হাব - মেগা শপিং স্টোর</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- হেডার -->
+    <header>
+        <nav>
+            <div class="nav-left">
+                <!-- থ্রি ডট মেনু -->
+                <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                <div class="logo-container">
+                    <img id="header-logo-img" src="" alt="Logo" style="display:none;">
+                    <span class="logo-highlight">D O R X</span> হাব
+                </div>
+            </div>
+            <ul>
+                <li><a href="#home">হোম</a></li>
+                <li><a href="#products">পণ্যসমূহ</a></li>
+                <li><a href="#" id="auth-nav-btn" onclick="handleAuthClick()" class="admin-btn-nav"><i class="fa-solid fa-lock"></i> অ্যাডমিন লগইন</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- থ্রি ডট ড্রয়ার সাইডবার (অ্যাডমিন কন্ট্রোল মেনু) -->
+    <div id="sidebar-drawer" class="sidebar-drawer">
+        <div class="sidebar-header">
+            <h3><i class="fa-solid fa-bars-progress"></i> অ্যাডমিন মেনু</h3>
+            <span class="close-btn" style="position:static; font-size:1.5rem;" onclick="toggleSidebar()">&times;</span>
+        </div>
+        <ul class="sidebar-menu-list">
+            <li><a href="#home" onclick="toggleSidebar()"><i class="fa-solid fa-house"></i> হোম পেজ</a></li>
+            <li><a href="#products" onclick="toggleSidebar()"><i class="fa-solid fa-bag-shopping"></i> পণ্যসমূহ</a></li>
+            <li id="sb-admin-panel" style="display:none;"><button onclick="openAdminPanel(); toggleSidebar();"><i class="fa-solid fa-sliders"></i> অ্যাডমিন কন্ট্রোল প্যানেল</button></li>
+            <li id="sb-orders" style="display:none;"><button onclick="openOrdersDashboard(); toggleSidebar();"><i class="fa-solid fa-clipboard-list"></i> কাস্টমার অর্ডার লিস্ট</button></li>
+            <li><a href="#" onclick="openFooterEditModal(); toggleSidebar();"><i class="fa-solid fa-address-book"></i> ফুটার ও যোগাযোগের ঠিকানা এডিট</a></li>
+        </ul>
+    </div>
+
+    <!-- ভাসমান কুইক অর্ডার বাটন -->
+    <div class="floating-order-btn" onclick="openOrderModal('সাধারণ অনুসন্ধান')">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>অর্ডার করুন</span>
+    </div>
+
+    <!-- হিরো সেকশন / ওয়ালপেপার -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <span class="badge">🔥 অফিশিয়াল মেগা শপিং স্টোর</span>
+            <h1>স্বাগতম <span class="highlight-text">D O R X হাব</span>-এ</h1>
+            <p>আমাদের ২৪টি এক্সক্লুসিভ কালেকশন থেকে আপনার পছন্দের প্রোডাক্ট বেছে নিন!</p>
+            
+            <!-- ওয়ালপেপার সেকশনে ২টি বড় মিডিয়াম সাইজ বাটন -->
+            <div class="hero-action-buttons">
+                <button class="btn-hero-option btn-free-delivery" onclick="filterSpecial('free_delivery')">
+                    <i class="fa-solid fa-truck-fast"></i> ফ্রি ডেলিভারি অপশন
+                </button>
+                <button class="btn-hero-option btn-best-discount" onclick="filterSpecial('best_discount')">
+                    <i class="fa-solid fa-tags"></i> বেস্ট ডিসকাউন্ট অপশন
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <!-- অ্যাডমিন প্যানেল -->
+        <section id="admin-panel" class="admin-section glass-box" style="display: none;">
+            <div class="admin-header-flex">
+                <h2><i class="fa-solid fa-sliders"></i> অ্যাডমিন কন্ট্রোল ও সেটিংস</h2>
+                <button class="btn delete-btn" onclick="closeAdminPanel()">বন্ধ করুন</button>
+            </div>
+            
+            <!-- পাসওয়ার্ড পরিবর্তনের ফর্ম -->
+            <div class="customization-box">
+                <h3><i class="fa-solid fa-key"></i> ইউজারনেম ও পাসওয়ার্ড পরিবর্তন</h3>
+                <form onsubmit="changeAdminPassword(event)">
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label>নতুন ইউজারনেম:</label>
+                            <input type="text" id="new-admin-user" required placeholder="ইউজারনেম লিখুন">
+                        </div>
+                        <div class="form-group">
+                            <label>নতুন পাসওয়ার্ড:</label>
+                            <input type="password" id="new-admin-pass" required placeholder="পাসওয়ার্ড লিখুন">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">পরিবর্তন সেভ করুন</button>
+                </form>
+            </div>
+
+            <hr style="margin: 25px 0; border:0; border-top:1px solid rgba(255,255,255,0.1);">
+
+            <!-- ডিজাইন কাস্টমাইজেশন ও ওয়ালপেপার ম্যানেজমেন্ট -->
+            <div class="customization-box">
+                <h3><i class="fa-solid fa-palette"></i> কালার গ্রেডিয়েন্ট ও ওয়ালপেপার এডিট</h3>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>থিম কালার ১:</label>
+                        <input type="color" id="theme-color-1" value="#6366f1">
+                    </div>
+                    <div class="form-group">
+                        <label>থিম কালার ২:</label>
+                        <input type="color" id="theme-color-2" value="#ec4899">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>লোগো ছবি আপলোড:</label>
+                    <input type="file" id="site-logo-file" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>ওয়ালপেপার ছবি আপলোড / পরিবর্তন:</label>
+                    <input type="file" id="site-bg-file" accept="image/*">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-primary" onclick="updateSiteDesign()">ডিজাইন ও ওয়ালপেপার সেভ করুন</button>
+                    <button type="button" class="btn delete-btn" onclick="removeWallpaper()">ওয়ালপেপার রিমুভ করুন</button>
+                </div>
+            </div>
+
+            <hr style="margin: 25px 0; border:0; border-top:1px solid rgba(255,255,255,0.1);">
+
+            <!-- প্রোডাক্ট যোগ/এডিট ফর্ম -->
+            <h3 id="form-title">নতুন প্রোডাক্ট যোগ করুন</h3>
+            <form id="product-form" onsubmit="saveProduct(event)">
+                <input type="hidden" id="edit-index" value="">
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>প্রোডাক্টের নাম:</label>
+                        <input type="text" id="p-name" required placeholder="যেমন: প্রিমিয়াম ব্লেেন্ডার জাস">
+                    </div>
+                    <div class="form-group">
+                        <label>ক্যাটাগরি:</label>
+                        <input type="text" id="p-category" placeholder="যেমন: কিচেন, হেলথ, ফ্যাশন">
+                    </div>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>মূল্য (টাকা):</label>
+                        <input type="number" id="p-price" required placeholder="যেমন: ১২০০">
+                    </div>
+                    <div class="form-group">
+                        <label>বিশেষ অফার টাইপ:</label>
+                        <select id="p-special">
+                            <option value="normal">সাধারণ প্রোডাক্ট</option>
+                            <option value="free_delivery">ফ্রি ডেলিভারি</option>
+                            <option value="best_discount">বেস্ট ডিসকাউন্ট</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>প্রোডাক্ট ছবি আপলোড:</label>
+                    <input type="file" id="p-img-file" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>বিস্তারিত বিবরণী (Full Details):</label>
+                    <textarea id="p-desc" rows="3" placeholder="প্রোডাক্টের সাইজ, মেটেরিয়াল, বিবরণ বিস্তারিত লিখুন..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> প্রোডাক্ট সেভ করুন</button>
+            </form>
+        </section>
+
+        <!-- প্রোডাক্ট সেকশন -->
+        <section id="products" class="products-container">
+            <h2>আমাদের <span class="highlight-text">প্রোডাক্ট কালেকশন</span></h2>
+            
+            <div class="filter-bar">
+                <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="🔍 পছন্দের প্রোডাক্ট খুঁজুন (যেমন: হেলথ, কিচেন, শার্ট)...">
+            </div>
+
+            <!-- প্রোডাক্ট গ্রিড -->
+            <div id="product-grid" class="product-grid">
+                <!-- ডাইনামিকালি ২৪টি প্রোডাক্ট একসাথে লোড হবে -->
+            </div>
+        </section>
+
+        <!-- আধুনিক কাস্টমার অর্ডার তালিকা ড্যাশবোর্ড -->
+        <section id="orders-management" class="contact-section glass-box" style="display: none;">
+            <div class="admin-header-flex">
+                <h2><i class="fa-solid fa-boxes-packing"></i> কাস্টমার অর্ডার ম্যানেজমেন্ট</h2>
+                <button class="btn delete-btn" onclick="clearAllOrders()">সব অর্ডার মুছুন</button>
+            </div>
+            <div id="order-list-box"></div>
+        </section>
+    </main>
+
+    <!-- প্রোডাক্ট ডিটেইলস মডাল -->
+    <div id="product-details-modal" class="modal">
+        <div class="modal-content product-page-content glass-box">
+            <span class="close-btn" onclick="closeProductDetails()">&times;</span>
+            <div class="product-page-grid">
+                <div class="product-page-img">
+                    <img id="detail-img" src="" alt="Product Image">
+                </div>
+                <div class="product-page-info">
+                    <span id="detail-cat" class="cat-tag"></span>
+                    <h2 id="detail-title"></h2>
+                    <p id="detail-price" class="price"></p>
+                    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;">
+                    <h4>প্রোডাক্টের বিবরণ:</h4>
+                    <p id="detail-desc" class="full-desc"></p>
+                    <button class="btn btn-primary btn-block" style="margin-top:20px;" onclick="openOrderModalFromDetails()"><i class="fa-solid fa-bag-shopping"></i> এই প্রোডাক্টটি অর্ডার করুন</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- কাস্টমার অর্ডার পপআপ মডাল -->
+    <div id="order-modal" class="modal">
+        <div class="modal-content glass-box">
+            <span class="close-btn" onclick="closeOrderModal()">&times;</span>
+            <h2><i class="fa-solid fa-cart-shopping"></i> অর্ডার কনফার্ম করুন</h2>
+            <form id="customer-order-form" onsubmit="placeOrder(event)">
+                <div class="form-group">
+                    <label>নির্বাচিত প্রোডাক্ট:</label>
+                    <input type="text" id="modal-ordered-product" readonly style="background:#0f172a; color:var(--color-secondary); font-weight:bold;">
+                </div>
+                <div class="form-group">
+                    <label>আপনার নাম:</label>
+                    <input type="text" id="cust-name" required placeholder="আপনার পূর্ণ নাম">
+                </div>
+                <div class="form-group">
+                    <label>মোবাইল নম্বর:</label>
+                    <input type="tel" id="cust-phone" required placeholder="আপনার সচল ফোন নম্বর">
+                </div>
+                <div class="form-group">
+                    <label>ডেলিভারি ঠিকানা:</label>
+                    <textarea id="cust-address" rows="3" required placeholder="বাসা/রোড, এলাকা, থানা ও জেলা"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-circle-check"></i> অর্ডার কনফার্ম করুন</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- অ্যাডমিন লগইন পপআপ -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content glass-box">
+            <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+            <h2><i class="fa-solid fa-user-shield"></i> অ্যাডমিন প্রবেশ</h2>
+            <form onsubmit="processLogin(event)">
+                <div class="form-group">
+                    <label>ইউজারনেম:</label>
+                    <input type="text" id="login-user" required placeholder="ইউজারনেম (admin)">
+                </div>
+                <div class="form-group">
+                    <label>পাসওয়ার্ড:</label>
+                    <input type="password" id="login-pass" required placeholder="পাসওয়ার্ড (dorx123)">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">লগইন</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ফুটার ও ঠিকানা এডিট মডাল -->
+    <div id="footer-edit-modal" class="modal">
+        <div class="modal-content glass-box">
+            <span class="close-btn" onclick="closeFooterEditModal()">&times;</span>
+            <h2><i class="fa-solid fa-address-book"></i> ফুটার ও যোগাযোগের তথ্য এডিট</h2>
+            <form onsubmit="saveFooterInfo(event)" style="margin-top: 15px;">
+                <div class="form-group">
+                    <label>কোম্পানি / স্টোর নাম:</label>
+                    <input type="text" id="footer-store-name" required>
+                </div>
+                <div class="form-group">
+                    <label>স্টোরের সংক্ষিপ্ত বিবরণ:</label>
+                    <textarea id="footer-desc" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>ঠিকানা:</label>
+                    <input type="text" id="footer-address" required>
+                </div>
+                <div class="form-group">
+                    <label>ইমেইল:</label>
+                    <input type="email" id="footer-email" required>
+                </div>
+                <div class="form-group">
+                    <label>ফোন নম্বর:</label>
+                    <input type="text" id="footer-phone" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">তথ্য আপডেট করুন</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- পলিসি ও শর্তাবলী মডাল -->
+    <div id="policy-modal" class="modal">
+        <div class="modal-content glass-box">
+            <span class="close-btn" onclick="closePolicyModal()">&times;</span>
+            <h2 id="policy-modal-title" style="margin-bottom: 15px; color: var(--color-primary);"></h2>
+            <div id="policy-modal-body" style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.8;"></div>
+        </div>
+    </div>
+
+    <!-- ফুটার -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-box">
+                <h4><span class="logo-highlight" id="footer-disp-name">DORX Hub.com</span></h4>
+                <p id="footer-disp-desc">আপনার আস্থার অনলাইন শপিং গন্তব্য। সেরা মূল্যে সেরা পণ্য পৌঁছে দেওয়াই আমাদের লক্ষ্য।</p>
+            </div>
+            <div class="footer-box">
+                <h4>পলিসি ও শর্তাবলী</h4>
+                <ul>
+                    <li><a href="#" onclick="openPolicy('privacy')">প্রাইভেসি পলিসি (Privacy Policy)</a></li>
+                    <li><a href="#" onclick="openPolicy('terms')">টার্মস এন্ড কন্ডিশন (Terms & Conditions)</a></li>
+                    <li><a href="#" onclick="openPolicy('delivery')">ডেলিভারি পলিসি (Delivery Policy)</a></li>
+                    <li><a href="#" onclick="openPolicy('return')">রিটার্ন পলিসি (Return Policy)</a></li>
+                </ul>
+            </div>
+            <div class="footer-box">
+                <h4>যোগাযোগের ঠিকানা</h4>
+                <p><i class="fa-solid fa-location-dot"></i> <span id="footer-disp-address">ঠিকানা: ঢাকা, বাংলাদেশ</span></p>
+                <p><i class="fa-solid fa-envelope"></i> <span id="footer-disp-email">ইমেইল: support@visionsoftit.com</span></p>
+                <p><i class="fa-solid fa-phone"></i> <span id="footer-disp-phone">ফোন: +৮৮০ ১২৩৪ ৫৬৭৮৯০</span></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; ২০২৬ <span class="highlight-text" id="footer-disp-domain">DORX Hub.com</span> | Copyright Developed by <span style="color: var(--color-primary); font-weight: bold;">Vision Soft IT</span>। সর্বস্বত্ব সংরক্ষিত।</p>
+        </div>
+    </footer>
+
+    <!-- জাভাস্ক্রিপ্ট লজিক -->
+    <script>
+        let adminAuth = JSON.parse(localStorage.getItem('dorx_admin_auth')) || { user: "admin", pass: "dorx123" };
+
+        // ২৪টি ভিন্ন ক্যাটাগরির (হেলথ, কিচেন, গ্যাজেট, ফ্যাশন) আসল অনলাইন প্রোডাক্ট
+        let realOnlineProducts = [
+            // হেলথ & ফিটনেস (Health & Fitness)
+            { id: 1, name: "ডিজিটাল ব্লড প্রেশার মনিটর", category: "হেলথ", price: "2200", special: "free_delivery", desc: "হাতের প্রেশার দ্রুত ও সঠিকভাবে পরিমাপের জন্য আধুনিক ডিজিটাল বিপি মেশিন।", img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500" },
+            { id: 2, name: "ফুল বডি পারকাশন মাসাজ গান", category: "হেলথ", price: "2850", special: "best_discount", desc: "মাসল পেইন্ড ও ক্লান্তি দূর করতে ৬ স্পিড অ্যাডজাস্টেবল রিচার্জেবল মাসাজার।", img: "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=500" },
+            { id: 3, name: "স্মার্ট ডিজিটাল ওয়েট স্কেল", category: "হেলথ", price: "1450", special: "free_delivery", desc: "শরীরের সঠিক ওজন ট্র্যাক করার জন্য টেম্পার্ড গ্লাস ডিজিটাল স্কেল।", img: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500" },
+            { id: 4, name: "পোর্টেবল ফিঙ্গারটপ পালস অক্সিমোটর", category: "হেলথ", price: "850", special: "normal", desc: "রক্তে অক্সিজেনের মাত্রা ও পালস রেট পরিমাপের পোর্টেবল ডিভাইস।", img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500" },
+            { id: 5, name: "পোশ্চার করেক্টর ও ব্যাক সাপোর্ট বেল্ট", category: "হেলথ", price: "950", special: "best_discount", desc: "মেরুদণ্ড সোজা রাখতে ও পিঠের ব্যথা কমাতে আরামদায়ক অ্যাডজাস্টেবল বেল্ট।", img: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=500" },
+            { id: 6, name: "স্টাফ পোর্টেবল নেবুলাইজার মেশিন", category: "হেলথ", price: "1750", special: "normal", desc: "শ্বাসকষ্টের চিকিৎসায় সহজ ব্যবহারযোগ্য পোর্টেবল মিনি নেবুলাইজার।", img: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=500" },
+
+            // কিচেন & ইলেকট্রনিক্স (Kitchen & Home Appliances)
+            { id: 7, name: "মিনি ইলেকট্রিক জুইস ব্লেন্ডার জুপার", category: "কিচেন", price: "1350", special: "free_delivery", desc: "ইউএসবি চার্জিং সাপোর্টেড পোর্টেবল ফ্রুট জুসার ও স্মুদি মেকার।", img: "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=500" },
+            { id: 8, name: "স্মার্ট ডিজিটাল ইলেকট্রিক এয়ার ফ্রায়ার", category: "কিচেন", price: "6500", special: "best_discount", desc: "তেল ছাড়াই স্বাস্থ্যকর ও সুস্বাদু খাবার ফ্রাই করার আধুনিক এয়ার ফ্রায়ার।", img: "https://images.unsplash.com/photo-1585515320310-259814833e62?w=500" },
+            { id: 9, name: "নন-স্টিক গ্রানাইট কুকওয়্যার সেট", category: "কিচেন", price: "3400", special: "normal", desc: "কম তেলে রান্নার জন্য মার্বেল কোটিং যুক্ত টেকসই ৩ পিসের হাড়ি সেট।", img: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=500" },
+            { id: 10, name: "অটোমেটিক ইলেকট্রিক রাইস কুকার", category: "কিচেন", price: "2450", special: "free_delivery", desc: "দ্রুত ও সুস্বাদু ভাত রান্নার জন্য ১.৮ লিটার নন-স্টিক ইলেকট্রিক রাইস কুকার।", img: "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=500" },
+            { id: 11, name: "স্টেইনলেস স্টিল ইলেকট্রিক কেটলি", category: "কিচেন", price: "990", special: "best_discount", desc: "দ্রুত পানি গরম ও চা বানানোর জন্য ২ লিটার অটো অফ ইলেকট্রিক কেটলি।", img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f6?w=500" },
+            { id: 12, name: "হাত দিয়ে চাল চালনা কিচেন স্পাইস বক্স", category: "কিচেন", price: "750", special: "normal", desc: "রান্নাঘরের মশলা পরিপাটি রাখতে সুন্দর অ্যাক্রিলিক স্পাইস অর্গানাইজার।", img: "https://images.unsplash.com/photo-1532336414038-cf19250c5757?w=500" },
+
+            // গ্যাজেটস (Gadgets & Tech)
+            { id: 13, name: "স্মার্ট ওয়্যারলেস ব্লুটুথ হেডফোন", category: "গ্যাজেট", price: "2450", special: "free_delivery", desc: "নয়েজ ক্যানসেলেশন ও দীর্ঘস্থায়ী ব্যাটারি ব্যাকআপ সহ উন্নত সাউন্ড কোয়ালিটি।", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+            { id: 14, name: "স্মার্ট ওয়াচ উইথ হার্ট রেট মনিটর", category: "গ্যাজেট", price: "3200", special: "best_discount", desc: "ফুল টাচ স্ক্রিন, হেলথ ট্র্যাকিং এবং ওয়াটারপ্রুফ ফিচার সংবলিত স্মার্টওয়াচ।", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+            { id: 15, name: "গেমিং মাউস আরজিবি লাইটিং", category: "গ্যাজেট", price: "1400", special: "normal", desc: "হাই ডিপিআই অ্যাডজাস্টেবল আরজিবি কুল গেমিং মাউস।", img: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500" },
+            { id: 16, name: "ওয়্যারলেস পোর্টেবল স্পিকার", category: "গ্যাজেট", price: "1750", special: "free_delivery", desc: "ডিপ বেস ও ক্লিয়ার সাউন্ড কোয়ালিটির মিনি ওয়াটারপ্রুফ স্পিকার।", img: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+            { id: 17, name: "স্মার্ট পোর্টেবল পাওয়ার ব্যাংক ২০০০০mAh", category: "গ্যাজেট", price: "1950", special: "best_discount", desc: "ফাস্ট চার্জিং সাপোর্টেড দীর্ঘস্থায়ী ব্যাটারি পাওয়ার ব্যাংক।", img: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=500" },
+            { id: 18, name: "ওয়্যারলেস ইয়ারবাডস TWS Pro", category: "গ্যাজেট", price: "1290", special: "normal", desc: "এইচডি মাইক্রোফোন ও টাচ কন্ট্রোল ওয়াটারপ্রুফ ইয়ারবাডস।", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500" },
+
+            // ফ্যাশন & লাইফস্টাইল (Fashion & Lifestyle)
+            { id: 19, name: "প্রিমিয়াম ফরমাল কটন শার্ট", category: "ফ্যাশন", price: "1250", special: "free_delivery", desc: "১০০% পিওর কটন ফেব্রিক দিয়ে তৈরি অত্যন্ত আরামদায়ক ফরমাল শার্ট।", img: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500" },
+            { id: 20, name: "ক্যাজুয়াল স্নিকার্স শু ফর ম্যান", category: "ফ্যাশন", price: "1890", special: "best_discount", desc: "হালকা ওজন এবং অত্যন্ত আরামদায়ক সোলের ক্যাজুয়াল ট্রেন্ডি স্নিকার্স।", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" },
+            { id: 21, name: "স্টাইলিশ লেদার ওয়ালেট", category: "ফ্যাশন", price: "850", special: "normal", desc: "জেনুইন লেদার প্রিমিয়াম ফিনিশিং রিচ কালার মানিব্যাগ।", img: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500" },
+            { id: 22, name: "ট্রাভেল ব্যাকপ্যাক ওয়াটারপ্রুফ", category: "ফ্যাশন", price: "1650", special: "free_delivery", desc: "ল্যাপটপ চেম্বার ও ওয়াটারপ্রুফ মেটেরিয়ালে তৈরি ট্রাভেল ব্যাগ।", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500" },
+            { id: 23, name: "স্পোর্টস রানিং শুজ", category: "ফ্যাশন", price: "2150", special: "best_discount", desc: "দৌড়াদৌড়ি ও জিম ওয়ার্কআউটের জন্য মানানসই লাইটওয়েট রানিং শু।", img: "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=500" },
+            { id: 24, name: "ক্যাজুয়াল পোলো টি-শার্ট", category: "ফ্যাশন", price: "650", special: "normal", desc: "১০০% কটন প্রিমিয়াম ফ্যাব্রিক পোলো গেঞ্জি।", img: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=500" }
+        ];
+
+        // লোকাল স্টোরেজে নতুন প্রোডাক্ট না থাকলে রিয়েল প্রোডাক্টগুলো বসবে
+        if (!localStorage.getItem('dorx_products')) {
+            localStorage.setItem('dorx_products', JSON.stringify(realOnlineProducts));
+        }
+
+        let products = JSON.parse(localStorage.getItem('dorx_products'));
+        let orders = JSON.parse(localStorage.getItem('dorx_orders')) || [
+            { id: 101, product: "ডিজিটাল ব্লড প্রেশার মনিটর", name: "রহিম আহমেদ", phone: "01712345678", address: "মিরপুর-১০, ঢাকা", date: "10/11/2026, 3:15 PM", status: "Pending" },
+            { id: 102, product: "মিনি ইলেকট্রিক জুইস ব্লেন্ডার জুপার", name: "করিম হাসান", phone: "01887654321", address: "জিইসি মোড়, চট্টগ্রাম", date: "10/11/2026, 4:40 PM", status: "Processing" }
+        ];
+
+        let siteSettings = JSON.parse(localStorage.getItem('dorx_settings')) || {
+            logo: "",
+            bg: "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=1200",
+            color1: "#6366f1",
+            color2: "#ec4899",
+            storeName: "DORX Hub.com",
+            storeDesc: "আপনার আস্থার অনলাইন শপিং গন্তব্য। সেরা মূল্যে সেরা পণ্য পৌঁছে দেওয়াই আমাদের লক্ষ্য।",
+            address: "ঢাকা, বাংলাদেশ",
+            email: "support@visionsoftit.com",
+            phone: "+৮৮০ ১২৩৪ ৫৬৭৮৯০"
+        };
+
+        let isAdmin = false;
+        let currentSelectedProduct = "";
+
+        function toggleSidebar() {
+            document.getElementById('sidebar-drawer').classList.toggle('open');
+        }
+
+        function applySettings() {
+            document.documentElement.style.setProperty('--color-primary', siteSettings.color1 || '#6366f1');
+            document.documentElement.style.setProperty('--color-secondary', siteSettings.color2 || '#ec4899');
+            if (siteSettings.bg) {
+                document.querySelector('.hero').style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('${siteSettings.bg}')`;
+            } else {
+                document.querySelector('.hero').style.backgroundImage = `none`;
+            }
+            if (siteSettings.logo) {
+                let logoImg = document.getElementById('header-logo-img');
+                logoImg.src = siteSettings.logo;
+                logoImg.style.display = 'inline-block';
+            } else {
+                document.getElementById('header-logo-img').style.display = 'none';
+            }
+
+            document.getElementById('footer-disp-name').innerText = siteSettings.storeName || "DORX Hub.com";
+            document.getElementById('footer-disp-domain').innerText = siteSettings.storeName || "DORX Hub.com";
+            document.getElementById('footer-disp-desc').innerText = siteSettings.storeDesc || "";
+            document.getElementById('footer-disp-address').innerText = `ঠিকানা: ${siteSettings.address || ""}`;
+            document.getElementById('footer-disp-email').innerText = `ইমেইল: ${siteSettings.email || ""}`;
+            document.getElementById('footer-disp-phone').innerText = `ফোন: ${siteSettings.phone || ""}`;
+        }
+
+        // একসাথে ২৪টি প্রোডাক্ট ডিসপ্লে করার ফাংশন
+        function displayProducts(filteredList = null) {
+            const list = filteredList || products;
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            list.forEach((p) => {
+                let realIndex = products.findIndex(item => item.id === p.id);
+                let badgeHTML = '';
+                if(p.special === 'free_delivery') badgeHTML = `<span class="badge-tag badge-free-delivery">ফ্রি ডেলিভারি</span>`;
+                else if(p.special === 'best_discount') badgeHTML = `<span class="badge-tag badge-best-discount">বেস্ট ডিসকাউন্ট</span>`;
+
+                grid.innerHTML += `
+                    <div class="product-card" onclick="openProductDetails(${realIndex})">
+                        <div class="product-img-box">
+                            <img src="${p.img}" alt="${p.name}">
+                            ${badgeHTML}
+                        </div>
+                        <div class="product-details">
+                            <span class="cat-tag">${p.category || 'সাধারণ'}</span>
+                            <h3>${p.name}</h3>
+                            <p class="product-desc">${p.desc}</p>
+                            <p class="price">৳ ${p.price}/-</p>
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); openProductDetails(${realIndex})">ডিটেইলস দেখুন</button>
+                            ${isAdmin ? `
+                                <div class="admin-actions" onclick="event.stopPropagation();">
+                                    <button class="btn edit-btn" onclick="editProduct(${realIndex})">এডিট</button> 
+                                    <button class="btn delete-btn" onclick="deleteProduct(${realIndex})">ডিলিট</button>
+                                </div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (isAdmin && !filteredList) {
+                grid.innerHTML += `
+                    <div class="product-card add-product-card" onclick="openAdminPanel()">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <h3>নতুন প্রোডাক্ট যোগ করুন</h3>
+                    </div>
+                `;
+            }
+        }
+
+        function filterProducts() {
+            let query = document.getElementById('search-input').value.toLowerCase();
+            let filtered = products.filter(p => p.name.toLowerCase().includes(query) || (p.category && p.category.toLowerCase().includes(query)));
+            displayProducts(filtered);
+        }
+
+        function filterSpecial(type) {
+            let filtered = products.filter(p => p.special === type);
+            displayProducts(filtered);
+            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function openProductDetails(index) {
+            let p = products[index];
+            currentSelectedProduct = p.name;
+            document.getElementById('detail-img').src = p.img;
+            document.getElementById('detail-title').innerText = p.name;
+            document.getElementById('detail-cat').innerText = p.category || 'সাধারণ';
+            document.getElementById('detail-price').innerText = `৳ ${p.price}/-`;
+            document.getElementById('detail-desc').innerText = p.desc;
+            document.getElementById('product-details-modal').style.display = 'flex';
+        }
+        function closeProductDetails() { document.getElementById('product-details-modal').style.display = 'none'; }
+
+        function openOrderModalFromDetails() {
+            closeProductDetails();
+            openOrderModal(currentSelectedProduct);
+        }
+
+        function openOrderModal(productName) {
+            document.getElementById('modal-ordered-product').value = productName;
+            document.getElementById('order-modal').style.display = 'flex';
+        }
+        function closeOrderModal() { document.getElementById('order-modal').style.display = 'none'; }
+
+        function handleAuthClick() {
+            if(isAdmin) {
+                isAdmin = false;
+                toggleAdminUI();
+                alert("অ্যাডমিন মোড থেকে লগআউট করা হয়েছে।");
+            } else {
+                document.getElementById('login-modal').style.display = 'flex';
+            }
+        }
+        function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
+
+        function processLogin(e) {
+            e.preventDefault();
+            let u = document.getElementById('login-user').value;
+            let p = document.getElementById('login-pass').value;
+
+            if(u === adminAuth.user && p === adminAuth.pass) {
+                isAdmin = true;
+                closeLoginModal();
+                toggleAdminUI();
+                alert("অ্যাডমিন প্যানেলে সফলভাবে প্রবেশ করেছেন!");
+            } else {
+                alert("ভুল ইউজারনেম বা পাসওয়ার্ড!");
+            }
+        }
+
+        function toggleAdminUI() {
+            document.getElementById('sb-admin-panel').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('sb-orders').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('auth-nav-btn').innerHTML = isAdmin ? '<i class="fa-solid fa-right-from-bracket"></i> লগআউট' : '<i class="fa-solid fa-lock"></i> অ্যাডমিন লগইন';
+            displayProducts();
+        }
+
+        function openAdminPanel() { document.getElementById('admin-panel').style.display = 'block'; window.location.href = '#admin-panel'; }
+        function closeAdminPanel() { document.getElementById('admin-panel').style.display = 'none'; }
+        function openOrdersDashboard() { 
+            document.getElementById('orders-management').style.display = 'block'; 
+            displayOrders();
+            window.location.href = '#orders-management'; 
+        }
+
+        function openFooterEditModal() {
+            if (!isAdmin) {
+                alert("প্রথমে অ্যাডমিন লগইন করুন!");
+                document.getElementById('login-modal').style.display = 'flex';
+                return;
+            }
+            document.getElementById('footer-store-name').value = siteSettings.storeName || "";
+            document.getElementById('footer-desc').value = siteSettings.storeDesc || "";
+            document.getElementById('footer-address').value = siteSettings.address || "";
+            document.getElementById('footer-email').value = siteSettings.email || "";
+            document.getElementById('footer-phone').value = siteSettings.phone || "";
+            document.getElementById('footer-edit-modal').style.display = 'flex';
+        }
+        function closeFooterEditModal() { document.getElementById('footer-edit-modal').style.display = 'none'; }
+
+        function saveFooterInfo(e) {
+            e.preventDefault();
+            siteSettings.storeName = document.getElementById('footer-store-name').value;
+            siteSettings.storeDesc = document.getElementById('footer-desc').value;
+            siteSettings.address = document.getElementById('footer-address').value;
+            siteSettings.email = document.getElementById('footer-email').value;
+            siteSettings.phone = document.getElementById('footer-phone').value;
+
+            localStorage.setItem('dorx_settings', JSON.stringify(siteSettings));
+            applySettings();
+            closeFooterEditModal();
+            alert("ফুটার ও যোগাযোগের তথ্য সফলভাবে আপডেট হয়েছে!");
+        }
+
+        function changeAdminPassword(e) {
+            e.preventDefault();
+            let u = document.getElementById('new-admin-user').value;
+            let p = document.getElementById('new-admin-pass').value;
+            adminAuth = { user: u, pass: p };
+            localStorage.setItem('dorx_admin_auth', JSON.stringify(adminAuth));
+            alert("ইউজারনেম ও পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!");
+        }
+
+        function readFileAsDataURL(fileInput, callback) {
+            let file = fileInput.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) { callback(e.target.result); };
+                reader.readAsDataURL(file);
+            } else { callback(null); }
+        }
+
+        function updateSiteDesign() {
+            let logoFile = document.getElementById('site-logo-file');
+            let bgFile = document.getElementById('site-bg-file');
+
+            siteSettings.color1 = document.getElementById('theme-color-1').value;
+            siteSettings.color2 = document.getElementById('theme-color-2').value;
+
+            readFileAsDataURL(logoFile, function(logoData) {
+                if(logoData) siteSettings.logo = logoData;
+                readFileAsDataURL(bgFile, function(bgData) {
+                    if(bgData) siteSettings.bg = bgData;
+                    localStorage.setItem('dorx_settings', JSON.stringify(siteSettings));
+                    applySettings();
+                    alert("ডিজাইন ও ওয়ালপেপার আপডেট হয়েছে!");
+                });
+            });
+        }
+
+        function removeWallpaper() {
+            siteSettings.bg = "";
+            localStorage.setItem('dorx_settings', JSON.stringify(siteSettings));
+            applySettings();
+            alert("ওয়ালপেপার রিমুভ করা হয়েছে!");
+        }
+
+        function saveProduct(e) {
+            e.preventDefault();
+            let name = document.getElementById('p-name').value;
+            let category = document.getElementById('p-category').value;
+            let price = document.getElementById('p-price').value;
+            let special = document.getElementById('p-special').value;
+            let desc = document.getElementById('p-desc').value;
+            let imgFile = document.getElementById('p-img-file');
+            let editIndex = document.getElementById('edit-index').value;
+
+            readFileAsDataURL(imgFile, function(imgData) {
+                let finalImg = imgData || (editIndex !== "" ? products[editIndex].img : "https://picsum.photos/350/250");
+                
+                if (editIndex === "") {
+                    products.unshift({ id: Date.now(), name, category, price, special, desc, img: finalImg });
+                } else {
+                    products[editIndex] = { id: products[editIndex].id, name, category, price, special, desc, img: finalImg };
+                    document.getElementById('edit-index').value = "";
+                }
+
+                localStorage.setItem('dorx_products', JSON.stringify(products));
+                document.getElementById('product-form').reset();
+                displayProducts();
+                alert("প্রোডাক্ট সেভ হয়েছে!");
+            });
+        }
+
+        function editProduct(index) {
+            let p = products[index];
+            document.getElementById('p-name').value = p.name;
+            document.getElementById('p-category').value = p.category || '';
+            document.getElementById('p-price').value = p.price;
+            document.getElementById('p-special').value = p.special || 'normal';
+            document.getElementById('p-desc').value = p.desc;
+            document.getElementById('edit-index').value = index;
+            openAdminPanel();
+        }
+
+        function deleteProduct(index) {
+            if(confirm("আপনি কি এই প্রোডাক্টটি ডিলিট করতে চান?")) {
+                products.splice(index, 1);
+                localStorage.setItem('dorx_products', JSON.stringify(products));
+                displayProducts();
+            }
+        }
+
+        function placeOrder(e) {
+            e.preventDefault();
+            let product = document.getElementById('modal-ordered-product').value;
+            let name = document.getElementById('cust-name').value;
+            let phone = document.getElementById('cust-phone').value;
+            let address = document.getElementById('cust-address').value;
+
+            orders.unshift({ 
+                id: Math.floor(1000 + Math.random() * 9000), 
+                product, name, phone, address, 
+                date: new Date().toLocaleString(),
+                status: "Pending" 
+            });
+            localStorage.setItem('dorx_orders', JSON.stringify(orders));
+            closeOrderModal();
+            document.getElementById('customer-order-form').reset();
+            alert("আপনার অর্ডার সফলভাবে গ্রহণ করা হয়েছে! খুব শীঘ্রই আমরা আপনার সাথে যোগাযোগ করব।");
+        }
+
+        /* কাস্টমার অর্ডার ম্যানেজমেন্ট ড্যাশবোর্ড */
+        function displayOrders() {
+            let box = document.getElementById('order-list-box');
+            if(orders.length === 0) {
+                box.innerHTML = `<p style="color:#94a3b8; text-align:center; padding:20px;">কোনো কাস্টমার অর্ডার জমা হয়নি।</p>`;
+                return;
+            }
+            box.innerHTML = '';
+            orders.forEach((o, index) => {
+                let statusClass = "status-pending";
+                let statusLabel = "পেন্ডিং (Pending)";
+                if (o.status === "Processing") {
+                    statusClass = "status-processing";
+                    statusLabel = "প্রসেসিং (Processing)";
+                } else if (o.status === "Confirmed") {
+                    statusClass = "status-confirmed";
+                    statusLabel = "কনফার্মড (Confirmed)";
+                }
+
+                box.innerHTML += `
+                    <div class="order-card-modern">
+                        <div class="order-top-bar">
+                            <span class="order-id">অর্ডার আইডি: #${o.id}</span>
+                            <span class="order-date"><i class="fa-regular fa-clock"></i> ${o.date}</span>
+                        </div>
+                        <div class="order-main-info">
+                            <div class="order-customer">
+                                <p><strong>প্রোডাক্ট:</strong> <span style="color:var(--color-secondary);">${o.product}</span></p>
+                                <p><strong>কাস্টমার নাম:</strong> ${o.name}</p>
+                                <p><strong>মোবাইল নম্বর:</strong> ${o.phone}</p>
+                                <p><strong>ডেলিভারি ঠিকানা:</strong> ${o.address}</p>
+                            </div>
+                            <div style="text-align: right; display: flex; flex-direction: column; justify-content: center; align-items: flex-end;">
+                                <span class="status-badge ${statusClass}">${statusLabel}</span>
+                            </div>
+                        </div>
+                        <div class="order-actions-bar">
+                            <div>
+                                <label style="font-size:0.85rem; color:#cbd5e1; margin-right:8px;">স্ট্যাটাস পরিবর্তন:</label>
+                                <select class="order-status-select" onchange="updateOrderStatus(${index}, this.value)">
+                                    <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>পেন্ডিং</option>
+                                    <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>প্রসেসিং</option>
+                                    <option value="Confirmed" ${o.status === 'Confirmed' ? 'selected' : ''}>কনফার্মড</option>
+                                </select>
+                            </div>
+                            <button class="btn delete-btn" onclick="deleteOrder(${index})"><i class="fa-solid fa-trash"></i> ডিলিট</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateOrderStatus(index, newStatus) {
+            orders[index].status = newStatus;
+            localStorage.setItem('dorx_orders', JSON.stringify(orders));
+            displayOrders();
+        }
+
+        function deleteOrder(index) {
+            if(confirm("আপনি কি এই অর্ডারটি ডিলিট করতে চান?")) {
+                orders.splice(index, 1);
+                localStorage.setItem('dorx_orders', JSON.stringify(orders));
+                displayOrders();
+            }
+        }
+
+        function clearAllOrders() {
+            if(confirm("সব কাস্টমার অর্ডার লিস্ট মুছে ফেলতে চান?")) {
+                orders = [];
+                localStorage.removeItem('dorx_orders');
+                displayOrders();
+            }
+        }
+
+        function openPolicy(type) {
+            let title = "";
+            let content = "";
+            if(type === 'privacy') {
+                title = "প্রাইভেসি পলিসি (Privacy Policy)";
+                content = "আপনার ব্যক্তিগত তথ্যের গোপনীয়তা আমাদের কাছে অত্যন্ত গুরুত্বপূর্ণ। আমরা আপনার নাম, ফোন নম্বর এবং ঠিকানা শুধুমাত্র অর্ডার ডেলিভারির কাজে ব্যবহার করি এবং তা কোনো তৃতীয় পক্ষের কাছে প্রকাশ করি না।";
+            } else if(type === 'terms') {
+                title = "টার্মস এন্ড কন্ডিশন (Terms & Conditions)";
+                content = "আমাদের ওয়েবসাইট ব্যবহার করে অর্ডার করার মাধ্যমে আপনি আমাদের সকল নিয়মকানুন মেনে চলতে সম্মত হচ্ছেন। পণ্যের মূল্য ও স্টক যেকোনো সময় পরিবর্তিত হতে পারে।";
+            } else if(type === 'delivery') {
+                title = "ডেলিভারি পলিসি (Delivery Policy)";
+                content = "আমরা ঢাকার ভেতরে ২-৩ কার্যদিবস এবং ঢাকার বাইরে ৩-৫ কার্যদিবসের মধ্যে নির্ভরযোগ্য কুরিয়ার সার্ভিসের মাধ্যমে পণ্য হোম ডেলিভারি দিয়ে থাকি।";
+            } else if(type === 'return') {
+                title = "রিটার্ন পলিসি (Return Policy)";
+                content = "পণ্য পাওয়ার পর কোনো ত্রুটিপূর্ণ বা ক্ষতিগ্রস্ত পণ্য পেলে ৭ দিনের মধ্যে রিটার্ন বা এক্সচেঞ্জ করার সুবিধা রয়েছে। শর্ত সাপেক্ষে পণ্য অব্যবহৃত থাকতে হবে।";
+            }
+            document.getElementById('policy-modal-title').innerText = title;
+            document.getElementById('policy-modal-body').innerText = content;
+            document.getElementById('policy-modal').style.display = 'flex';
+        }
+        function closePolicyModal() { document.getElementById('policy-modal').style.display = 'none'; }
+
+        applySettings();
+        displayProducts();
+    </script>
+</body>
+</html>
